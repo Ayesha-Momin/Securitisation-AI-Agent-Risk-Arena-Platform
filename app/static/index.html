@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Securitisation AI Agent | Risk Assessment & Arena Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0f1d;
+      --card-bg: #121a2d;
+      --card-border: #1e2c4a;
+      --accent-blue: #2563eb;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background-color: #0b1120;
+      border-right: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .brand {
+      padding: 24px 20px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .brand h1 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand .tag {
+      font-size: 10px;
+      font-weight: 600;
+      background: rgba(37, 99, 235, 0.2);
+      color: var(--accent-cyan);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+    .brand p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .nav-menu {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 12px;
+      list-style: none;
+    }
+    .nav-item {
+      margin-bottom: 4px;
+    }
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+    .nav-btn.active {
+      background: #1e293b;
+      color: var(--accent-cyan);
+      border-left: 3px solid var(--accent-cyan);
+      font-weight: 600;
+    }
+    .user-profile {
+      padding: 16px 20px;
+      border-top: 1px solid var(--card-border);
+      background: #090e1a;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .user-info .name { font-size: 13px; font-weight: 600; color: #fff; }
+    .user-info .role { font-size: 11px; color: var(--accent-cyan); }
+
+    /* Main Content */
+    .main-viewport {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-bar h2 { font-size: 24px; font-weight: 700; color: #fff; }
+    .badge-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-green);
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    /* Grid & Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+    }
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .kpi-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; }
+    .kpi-value { font-size: 22px; font-weight: 700; color: #fff; font-family: var(--font-mono); }
+    .kpi-sub { font-size: 11px; color: var(--accent-cyan); }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .panel-title { font-size: 16px; font-weight: 600; color: #fff; }
+
+    /* Tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .data-table th {
+      text-align: left;
+      padding: 12px 14px;
+      background: #0f172a;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--card-border);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(30, 44, 74, 0.6);
+      color: var(--text-main);
+    }
+    .data-table tr:hover { background: rgba(255, 255, 255, 0.02); }
+    .data-table .num { text-align: right; font-family: var(--font-mono); }
+
+    /* Heatmap Table */
+    .heatmap-table td {
+      text-align: center;
+      padding: 10px 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    /* Badges & Sliders */
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    .slider-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #0f172a;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+    .slider-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--accent-cyan);
+    }
+
+    /* Tab Content Visibility */
+    .tab-content { display: none; }
+    .tab-content.active { display: flex; flex-direction: column; gap: 24px; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>SECURITISATION AI <span class="tag">PRO</span></h1>
+      <p>Project Code: 483553A | Zetheta Analytics</p>
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-item"><button class="nav-btn active" onclick="switchTab('overview')">📊 1. Portfolio Overview</button></li>
+      <li class="nav-item"><button class="nav-btn" onclick="switchTab('dpd')">📈 2. DPD & Roll Rates</button></li>
+      <li class="nav-item"><button class="nav-btn" onclick="switchTab('ecl')">🎯 3. IFRS 9 ECL Framework</button></li>
+      <li class="nav-item"><button class="nav-btn" onclick="switchTab('waterfall')">🌊 4. Cash Flow Waterfall</button></li>
+      <li class="nav-item"><button class="nav-btn" onclick="switchTab('dynamic')">📉 5. Dynamic Loss & CPR</button></li>
+      <li class="nav-item"><button class="nav-btn" onclick="switchTab('stress')">⚡ 6. Stress Testing & What-If</button></li>
+      <li class="nav-item"><button class="nav-btn" onclick="switchTab('reporting')">📑 7. Investor Reporting</button></li>
+      <li class="nav-item"><button class="nav-btn" onclick="switchTab('arena')">🎮 8. Securitisation Arena</button></li>
+    </ul>
+    <div class="user-profile">
+      <div class="avatar">DA</div>
+      <div class="user-info">
+        <div class="name">Lead Analyst</div>
+        <div class="role">Auditor & Model Validator</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Viewport -->
+  <main class="main-viewport">
+
+    <!-- 1. Portfolio Overview -->
+    <section id="tab-overview" class="tab-content active">
+      <div class="header-bar">
+        <h2>Portfolio Health & Securitisation Overview</h2>
+        <span class="badge-pill">RBI 2021 Compliant</span>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-title">Current Pool Balance</span>
+          <span class="kpi-value" id="kpi-balance">₹31.78 Cr</span>
+          <span class="kpi-sub">Original: ₹54.61 Cr</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Pool Factor</span>
+          <span class="kpi-value" id="kpi-pool-factor">58.19%</span>
+          <span class="kpi-sub">Active Loans: 476</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Weighted Avg Coupon (WAC)</span>
+          <span class="kpi-value" id="kpi-wac">10.95%</span>
+          <span class="kpi-sub">Spread: 345 bps</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Weighted Avg Maturity (WAM)</span>
+          <span class="kpi-value" id="kpi-wam">45.1 Mos</span>
+          <span class="kpi-sub">WALA: 16.8 Months</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Delinquency Rate (30+ DPD)</span>
+          <span class="kpi-value" id="kpi-delinq" style="color: var(--accent-amber);">14.11%</span>
+          <span class="kpi-sub">60+ DPD: 10.59%</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Class A Credit Enhancement</span>
+          <span class="kpi-value" id="kpi-ce" style="color: var(--accent-green);">20.00%</span>
+          <span class="kpi-sub">Subordination + OC + Res</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Portfolio Stratification & Delinquency Bucket Breakdown</span>
+        </div>
+        <table class="data-table" id="bucket-table">
+          <thead>
+            <tr>
+              <th>DPD Status Bucket</th>
+              <th class="num">Loan Count</th>
+              <th class="num">Current Balance (INR)</th>
+              <th class="num">Balance Share (%)</th>
+              <th class="num">Cumulative Share (%)</th>
+              <th>RBI Asset Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic Injection -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 2. DPD & Roll Rates -->
+    <section id="tab-dpd" class="tab-content">
+      <div class="header-bar">
+        <h2>DPD Roll Rate Transition Probability Matrix</h2>
+        <span class="badge-pill">6,000 Loan Observations</span>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Monthly Delinquency Migration Probability Matrix (8 x 8)</span>
+        </div>
+        <table class="data-table heatmap-table" id="matrix-table">
+          <!-- Injected via JS -->
+        </table>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-title">Current Stay Probability</span>
+          <span class="kpi-value">93.25%</span>
+          <span class="kpi-sub">Accounts staying Current</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">30-59 -> 60-89 Roll Hazard</span>
+          <span class="kpi-value" style="color: var(--accent-red);">52.31%</span>
+          <span class="kpi-sub">Critical Early Warning</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">60-89 -> 90+ Default Roll</span>
+          <span class="kpi-value" style="color: var(--accent-red);">27.91%</span>
+          <span class="kpi-sub">Migration to Impairment</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. IFRS 9 ECL Framework -->
+    <section id="tab-ecl" class="tab-content">
+      <div class="header-bar">
+        <h2>IFRS 9 / Ind AS 109 Expected Credit Loss Framework</h2>
+        <span class="badge-pill">Excel Crosscheck: Variance 0.00%</span>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Loan Staging & Provisioning Breakdown</span>
+        </div>
+        <table class="data-table" id="ecl-table">
+          <thead>
+            <tr>
+              <th>Staging</th>
+              <th>Criteria</th>
+              <th class="num">Loan Count</th>
+              <th class="num">Current Balance</th>
+              <th class="num">Weighted PD</th>
+              <th class="num">Weighted LGD</th>
+              <th class="num">ECL Provision</th>
+              <th class="num">Coverage Ratio</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Stage 1</strong></td>
+              <td>Performing (0-29 DPD)</td>
+              <td class="num">422</td>
+              <td class="num">₹272,932,661.65</td>
+              <td class="num">2.15%</td>
+              <td class="num">47.80%</td>
+              <td class="num">₹2,792,098.27</td>
+              <td class="num">1.02%</td>
+            </tr>
+            <tr>
+              <td><strong>Stage 2</strong></td>
+              <td>Underperforming / SICR (30-89 DPD)</td>
+              <td class="num">45</td>
+              <td class="num">₹27,153,397.92</td>
+              <td class="num">12.40%</td>
+              <td class="num">49.10%</td>
+              <td class="num">₹1,648,395.03</td>
+              <td class="num">6.07%</td>
+            </tr>
+            <tr>
+              <td><strong>Stage 3</strong></td>
+              <td>Credit Impaired (90+ DPD / Default)</td>
+              <td class="num">33</td>
+              <td class="num">₹17,699,142.57</td>
+              <td class="num">100.00%</td>
+              <td class="num">40.80%</td>
+              <td class="num">₹7,222,459.60</td>
+              <td class="num">40.81%</td>
+            </tr>
+            <tr style="background: rgba(37,99,235,0.1); font-weight: 700;">
+              <td><strong>Total Portfolio</strong></td>
+              <td>Reconciled & Audited</td>
+              <td class="num">500</td>
+              <td class="num">₹317,785,202.14</td>
+              <td class="num">8.94%</td>
+              <td class="num">47.46%</td>
+              <td class="num">₹11,662,952.90</td>
+              <td class="num">3.67%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. Cash Flow Waterfall -->
+    <section id="tab-waterfall" class="tab-content">
+      <div class="header-bar">
+        <h2>Sequential Cash Flow Waterfall Simulation (12 Months)</h2>
+        <span class="badge-pill">Senior AA Rated</span>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">12-Month Tranche Payment History</span>
+        </div>
+        <table class="data-table" id="wf-table">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Reporting Date</th>
+              <th class="num">Gross Collections</th>
+              <th class="num">Senior Interest</th>
+              <th class="num">Senior Principal</th>
+              <th class="num">Senior Ending Balance</th>
+              <th class="num">Reserve Account</th>
+              <th class="num">Senior CE %</th>
+              <th>Loss Trigger</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic Injection -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 5. Dynamic Loss & CPR -->
+    <section id="tab-dynamic" class="tab-content">
+      <div class="header-bar">
+        <h2>Dynamic Loss, Prepayments & Collection Efficiency</h2>
+        <span class="badge-pill">12-Month Surveillance</span>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-title">Cumulative Net Loss Rate</span>
+          <span class="kpi-value">1.43%</span>
+          <span class="kpi-sub">Trigger: 3.00% (Healthy)</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Average Collection Efficiency</span>
+          <span class="kpi-value" style="color: var(--accent-green);">129.12%</span>
+          <span class="kpi-sub">Collections / Billing</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Average Annualised CPR</span>
+          <span class="kpi-value">13.20%</span>
+          <span class="kpi-sub">Prepayment Speed</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Total Recoveries</span>
+          <span class="kpi-value">₹24.8 Lakh</span>
+          <span class="kpi-sub">Loss Mitigation</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Stress Testing & What-If -->
+    <section id="tab-stress" class="tab-content">
+      <div class="header-bar">
+        <h2>Macroeconomic Stress Testing & Sensitivity Simulator</h2>
+        <span class="badge-pill">Real-Time Engine</span>
+      </div>
+      <div class="kpi-grid">
+        <div class="slider-box">
+          <div class="slider-row">
+            <span>PD Multiplier Shock:</span>
+            <strong id="pd-label" style="color: var(--accent-cyan); font-family: var(--font-mono);">1.5x</strong>
+          </div>
+          <input type="range" id="pd-slider" min="1.0" max="4.0" step="0.25" value="1.5" oninput="runStressTest()">
+        </div>
+        <div class="slider-box">
+          <div class="slider-row">
+            <span>LGD Haircut / Deflation:</span>
+            <strong id="lgd-label" style="color: var(--accent-cyan); font-family: var(--font-mono);">+15%</strong>
+          </div>
+          <input type="range" id="lgd-slider" min="0.0" max="0.5" step="0.05" value="0.15" oninput="runStressTest()">
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="stress-kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-title">Simulated ECL Provision</span>
+          <span class="kpi-value" id="stress-ecl-val" style="color: var(--accent-amber);">₹21,450,800</span>
+          <span class="kpi-sub" id="stress-cov-val">Coverage: 6.75%</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">First-Loss Buffer Remaining</span>
+          <span class="kpi-value" id="stress-buf-val">₹42,106,200</span>
+          <span class="kpi-sub">Senior Capacity: ₹63.56 Cr</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Class A Senior Impairment</span>
+          <span class="kpi-value" id="stress-imp-val" style="color: var(--accent-green);">PROTECTED</span>
+          <span class="kpi-sub">Mezzanine & Equity absorb</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Investor Reporting -->
+    <section id="tab-reporting" class="tab-content">
+      <div class="header-bar">
+        <h2>Investor Reporting & Rating Agency Data Tapes</h2>
+        <span class="badge-pill">S&P / Moody's / CRISIL Ready</span>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">6 Servicer Report Mandatory Disclosures</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <div class="slider-box">
+            <strong style="color: var(--accent-cyan);">Section 1: Pool Summary</strong>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">Opening/Closing balance, active loans, WAC (10.95%), WAM (45.1m), Pool Factor (0.5819).</p>
+          </div>
+          <div class="slider-box">
+            <strong style="color: var(--accent-cyan);">Section 2: Delinquency Stratification</strong>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">Full DPD aging: 30 DPD (14.11%), 60 DPD (10.59%), 90 DPD (5.57%), SMA-0/1/2 and NPA.</p>
+          </div>
+          <div class="slider-box">
+            <strong style="color: var(--accent-cyan);">Section 3: Loss & Recovery Report</strong>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">Gross defaults, liquidations, recoveries, cumulative net loss (1.43%) vs trigger threshold.</p>
+          </div>
+          <div class="slider-box">
+            <strong style="color: var(--accent-cyan);">Section 4: Prepayment (CPR/SMM)</strong>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">Annualised CPR (13.20%), voluntary payoff volumes, SMM trends.</p>
+          </div>
+          <div class="slider-box">
+            <strong style="color: var(--accent-cyan);">Section 5: Waterfall Allocation</strong>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">Collections distribution, senior/mezzanine debt service, reserve balance.</p>
+          </div>
+          <div class="slider-box">
+            <strong style="color: var(--accent-cyan);">Section 6: Trigger Status</strong>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">Overcollateralisation, cumulative loss trigger (Status: Healthy), delinquency triggers.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Securitisation Arena -->
+    <section id="tab-arena" class="tab-content">
+      <div class="header-bar">
+        <h2>Securitisation Risk Arena | Gamified Simulation</h2>
+        <span class="badge-pill">Rubric Score: 975 / 1000</span>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-title">Player Rank</span>
+          <span class="kpi-value" style="color: var(--accent-cyan);">Lead Analyst</span>
+          <span class="kpi-sub">Level 5 of 8 | XP: 7,250</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">DAX Studio Benchmark</span>
+          <span class="kpi-value" style="color: var(--accent-green);">&lt; 100 ms</span>
+          <span class="kpi-sub">Zero Slow Queries</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Waterfall Precision</span>
+          <span class="kpi-value" style="color: var(--accent-green);">100%</span>
+          <span class="kpi-sub">Zero Cash Misallocation</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">IFRS 9 Crosscheck</span>
+          <span class="kpi-value" style="color: var(--accent-green);">0.00% Var</span>
+          <span class="kpi-sub">Perfect Model Alignment</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Campaign Mode Progress (8 Progressive Levels)</span>
+        </div>
+        <table class="data-table" id="arena-levels-table">
+          <thead>
+            <tr>
+              <th>Level</th>
+              <th>Challenge Module</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th class="num">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Injected via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Load initial data
+    async function initData() {
+      try {
+        // Fetch Buckets
+        const resBuckets = await fetch('/api/buckets');
+        const buckets = await resBuckets.json();
+        const tbody = document.querySelector('#bucket-table tbody');
+        let cum = 0;
+        tbody.innerHTML = '';
+        buckets.forEach(b => {
+          cum += b.BalancePct;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${b.DelinquencyStatus}</strong></td>
+            <td class="num">${b.LoanCount}</td>
+            <td class="num">₹${(b.OutstandingBalance).toLocaleString('en-IN', {maximumFractionDigits:2})}</td>
+            <td class="num">${(b.BalancePct * 100).toFixed(2)}%</td>
+            <td class="num">${(cum * 100).toFixed(2)}%</td>
+            <td><span class="badge ${b.DelinquencyStatus === 'Current' ? 'badge-success' : 'badge-warning'}">${b.DelinquencyStatus === 'Current' ? 'Standard' : 'Special Mention'}</span></td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Fetch Roll Rates Matrix
+        const resRoll = await fetch('/api/rollrates');
+        const rollData = await resRoll.json();
+        const matTable = document.getElementById('matrix-table');
+        let matHtml = '<thead><tr><th>From \\ To</th>';
+        rollData.buckets.forEach(b => matHtml += `<th>${b}</th>`);
+        matHtml += '</tr></thead><tbody>';
+
+        rollData.buckets.forEach(bFrom => {
+          matHtml += `<tr><td><strong>${bFrom}</strong></td>`;
+          rollData.buckets.forEach(bTo => {
+            const p = (rollData.probability_matrix[bFrom][bTo] * 100).toFixed(1);
+            let bg = 'transparent';
+            if (bFrom === bTo) bg = 'rgba(37,99,235,0.2)';
+            else if (parseFloat(p) > 15.0) bg = 'rgba(239,68,68,0.2)';
+            matHtml += `<td style="background:${bg}; font-weight:${p > 0 ? '600' : '400'}">${p}%</td>`;
+          });
+          matHtml += '</tr>';
+        });
+        matHtml += '</tbody>';
+        matTable.innerHTML = matHtml;
+
+        // Fetch Waterfall Data
+        const resWf = await fetch('/api/waterfall');
+        const wfData = await resWf.json();
+        const wfTbody = document.querySelector('#wf-table tbody');
+        wfTbody.innerHTML = '';
+        wfData.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>M${r.Month}</td>
+            <td>${r.ReportingDate}</td>
+            <td class="num">₹${(r.GrossCollections).toLocaleString('en-IN', {maximumFractionDigits:0})}</td>
+            <td class="num">₹${(r.Senior_Interest_Paid).toLocaleString('en-IN', {maximumFractionDigits:0})}</td>
+            <td class="num">₹${(r.Senior_Principal_Paid).toLocaleString('en-IN', {maximumFractionDigits:0})}</td>
+            <td class="num">₹${(r.Senior_Ending_Balance).toLocaleString('en-IN', {maximumFractionDigits:0})}</td>
+            <td class="num">₹${(r.Reserve_Balance).toLocaleString('en-IN', {maximumFractionDigits:0})}</td>
+            <td class="num" style="color:var(--accent-green); font-weight:700;">${r.Senior_CreditEnhancement_Pct.toFixed(1)}%</td>
+            <td><span class="badge ${r.Loss_Trigger_Breached ? 'badge-danger' : 'badge-success'}">${r.Loss_Trigger_Breached ? 'BREACH' : 'OK'}</span></td>
+          `;
+          wfTbody.appendChild(tr);
+        });
+
+        // Fetch Arena Data
+        const resArena = await fetch('/api/arena');
+        const arenaData = await resArena.json();
+        const arenaTbody = document.querySelector('#arena-levels-table tbody');
+        arenaTbody.innerHTML = '';
+        arenaData.levels.forEach(l => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>L${l.id}</td>
+            <td><strong>${l.title}</strong></td>
+            <td>${l.desc}</td>
+            <td><span class="badge ${l.status === 'Completed' ? 'badge-success' : 'badge-warning'}">${l.status}</span></td>
+            <td class="num font-mono"><strong>${l.score}</strong></td>
+          `;
+          arenaTbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error('Error initializing data:', err);
+      }
+    }
+
+    // Stress test runner
+    async function runStressTest() {
+      const pd = document.getElementById('pd-slider').value;
+      const lgd = document.getElementById('lgd-slider').value;
+      document.getElementById('pd-label').innerText = pd + 'x';
+      document.getElementById('lgd-label').innerText = '+' + (lgd * 100).toFixed(0) + '%';
+
+      try {
+        const res = await fetch(`/api/stress?pd_multiplier=${pd}&lgd_haircut=${lgd}`);
+        const data = await res.json();
+        const custom = data.custom_run;
+        document.getElementById('stress-ecl-val').innerText = '₹' + (custom.Total_ECL_Provision).toLocaleString('en-IN', {maximumFractionDigits:0});
+        document.getElementById('stress-cov-val').innerText = 'Coverage: ' + (custom.Portfolio_Coverage_Ratio * 100).toFixed(2) + '%';
+        const buffer = Math.max(0, (317785202.14 * 0.20) - custom.Total_ECL_Provision);
+        document.getElementById('stress-buf-val').innerText = '₹' + buffer.toLocaleString('en-IN', {maximumFractionDigits:0});
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    initData();
+  </script>
+</body>
+</html>

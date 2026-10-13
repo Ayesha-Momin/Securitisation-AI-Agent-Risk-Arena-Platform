@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  securitisation-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: securitisation_ai_agent
+    ports:
+      - "8501:8501"
+    environment:
+      - PORT=8501
+      - ENVIRONMENT=production
+      - PROJECT_CODE=483553A
+    restart: unless-stopped

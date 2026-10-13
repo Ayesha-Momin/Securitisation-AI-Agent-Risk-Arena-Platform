@@ -1,0 +1,68 @@
+{
+  "model_name": "Securitisation_AI_Agent_StarSchema",
+  "version": "1.0.0",
+  "tables": {
+    "DimLoan": {
+      "type": "Dimension",
+      "rows": 500,
+      "primary_key": "LoanID"
+    },
+    "DimBorrower": {
+      "type": "Dimension",
+      "rows": 500,
+      "primary_key": "BorrowerID"
+    },
+    "DimGeography": {
+      "type": "Dimension",
+      "rows": 19,
+      "primary_key": "State"
+    },
+    "DimDate": {
+      "type": "Dimension",
+      "rows": 11,
+      "primary_key": "SnapshotDate"
+    },
+    "FactMonthlyPerformance": {
+      "type": "Fact",
+      "rows": 6000,
+      "foreign_keys": [
+        "LoanID",
+        "SnapshotDate"
+      ]
+    },
+    "FactDynamicLoss": {
+      "type": "Fact",
+      "rows": 12,
+      "foreign_keys": [
+        "ReportingDate"
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "from": "FactMonthlyPerformance.LoanID",
+      "to": "DimLoan.LoanID",
+      "cardinality": "N:1"
+    },
+    {
+      "from": "FactMonthlyPerformance.SnapshotDate",
+      "to": "DimDate.SnapshotDate",
+      "cardinality": "N:1"
+    },
+    {
+      "from": "DimLoan.BorrowerID",
+      "to": "DimBorrower.BorrowerID",
+      "cardinality": "N:1"
+    },
+    {
+      "from": "DimLoan.State",
+      "to": "DimGeography.State",
+      "cardinality": "N:1"
+    },
+    {
+      "from": "FactDynamicLoss.ReportingDate",
+      "to": "DimDate.SnapshotDate",
+      "cardinality": "N:1"
+    }
+  ]
+}
