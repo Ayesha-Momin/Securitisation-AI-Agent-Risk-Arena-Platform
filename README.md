@@ -113,7 +113,4 @@ docker-compose up --build
 - **Tranche Protection**: Class A Senior credit enhancement increases from **20.00%** at deal close to **55.93%** by month 12.
 - **Stress Testing Resilience**: Even under a **4.0x Crisis shock** (2008 / IL&FS magnitude), Class A Senior Tranche suffers **ZERO principal impairment**.
 
----
 
-## 🛡️ License & IP Attribution
-All intellectual property arising from this project is the exclusive property of **Zetheta Algorithms Pvt. Ltd.** as per the confidentiality terms accepted at project commencement.
