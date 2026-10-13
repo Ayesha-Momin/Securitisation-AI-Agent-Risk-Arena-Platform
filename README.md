@@ -14,13 +14,13 @@ An institutional-grade securitisation surveillance, risk assessment, and cash-fl
 
 ```mermaid
 graph TD
-    subgraph Data Layer
+    subgraph DataLayer["Data Layer"]
         CSV1["Auto Loan Pool (500 Loans, 58 Fields)"]
         CSV2["DPD Snapshot History (6,000 Snapshots)"]
         CSV3["Dynamic Loss Monthly (12 Months)"]
     end
 
-    subgraph Star Schema Dimensional Model
+    subgraph StarSchema["Star Schema Dimensional Model"]
         DimL["DimLoan (PK: LoanID)"]
         DimB["DimBorrower (PK: BorrowerID)"]
         DimV["DimVehicle (PK: VehicleID)"]
@@ -30,7 +30,7 @@ graph TD
         FactL["FactDynamicLoss (12 Rows)"]
     end
 
-    subgraph Analytical Engines
+    subgraph AnalyticalEngines["Analytical Engines"]
         DAX["85 DAX Measures Suite (<100ms Studio Profile)"]
         ECL["IFRS 9 ECL Model (Stage 1/2/3 Staging)"]
         WF["Sequential Cash Flow Waterfall Engine"]
@@ -38,7 +38,7 @@ graph TD
         ST["Macro Stress Simulator (4 Scenarios)"]
     end
 
-    subgraph Consolidated Deliverables
+    subgraph ConsolidatedDeliverables["Consolidated Deliverables"]
         RPT["40+ Page Master Technical Report (Parts A-F)"]
         XLS["Institutional Excel Financial Model (6 Sheets)"]
         APP["Interactive Risk Arena Web Application (8 Modules)"]
@@ -46,9 +46,9 @@ graph TD
         TST["Automated Pytest / Unittest Suite (100% Pass)"]
     end
 
-    Data Layer --> Star Schema Dimensional Model
-    Star Schema Dimensional Model --> Analytical Engines
-    Analytical Engines --> Consolidated Deliverables
+    DataLayer --> StarSchema
+    StarSchema --> AnalyticalEngines
+    AnalyticalEngines --> ConsolidatedDeliverables
 ```
 
 ---
