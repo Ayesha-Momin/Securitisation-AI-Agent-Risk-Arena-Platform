@@ -5,7 +5,6 @@
 [![Rubric Score](https://img.shields.io/badge/Rubric%20Score-975%2F1000-blue.svg)]()
 [![Tests](https://img.shields.io/badge/Tests-16%20Passed%20(100%25)-success.svg)]()
 [![Compliance](https://img.shields.io/badge/RBI%20Securitisation%20Framework-Sept%202021%20Compliant-orange.svg)]()
-[![License](https://img.shields.io/badge/License-Zetheta%20Proprietary-red.svg)]()
 
 An institutional-grade securitisation surveillance, risk assessment, and cash-flow waterfall modeling platform built for Microsoft Power BI, Analysis Services, and Tabular models. Analyzes an empirical retail Indian auto-loan securitisation pool (500 loans, 6,000 monthly DPD snapshots, and 12-month dynamic loss aggregates) evaluated under the **Zetheta Algorithms 1000-Point Assessment Rubric**.
 
